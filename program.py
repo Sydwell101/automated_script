@@ -11,13 +11,13 @@ def main():
     print('--------------------------')
     print('    NTP SERVER SCRIPT')
     print('--------------------------')
-    name = 'System(s)'
+    print()
+    name = 'credentials'
     filename = 'lldp-info'
     # get_filename_full_path(name)
-    # config_device(name)
-    # connect.get_lldp_info(filename, name)
+    config_device(name)
+    connect.get_lldp_info(filename, name)
     connect.read_data(filename, name)
-    # get_username_password(name)
 
 
 def config_device(name):
