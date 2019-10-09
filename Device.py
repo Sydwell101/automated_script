@@ -11,7 +11,6 @@ class CiscoDevice:
 
     def connect_to_device(self, filename):
         user = program.get_username_password(filename)
-        # lab: 196.160.66.33
         log = []
         fname = 'log.txt'
 
