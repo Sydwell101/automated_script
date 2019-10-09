@@ -1,53 +1,22 @@
 import collections
-import connect
 import os
-import csv
-import requests
+from Device import CiscoDevice
 
 UserCredentials = collections.namedtuple('UserCredentials',
                                          'username, password')
 
 
 def main():
-    print('--------------------------')
-    print('    NTP SERVER SCRIPT')
-    print('--------------------------')
-    print()
+    print_header()
     name = 'credentials'
+    device1 = CiscoDevice('196.160.66.33')
+    device1.connect_to_device(name)
+    device1.config_device(name)
+
     filename = 'lldp-info'
-    file = 'newfile'
-    # get_filename_full_path(name)
-    # config_device(name)
-    # connect.get_lldp_info(filename, name)
-    # connect.read_data(filename, name)
-
-    get_ap_port_info(filename, name, file)
-
-
-def config_device(name):
-    conn = connect.connect_to_device(name)
-    config_command = ''
-    cmd = 'show run | include ntp server'
-    ping = 'ping {}'.format(conn.host)
-
-    ping_output = conn.send_command(ping)
-    print(ping_output)
-
-    print('Connecting to {}...'.format(conn.host))
-
-    if conn:
-        show_output = ''
-        config_command = ['ntp server 196.26.5.10', 'ntp server 196.4.160.4']
-
-        for config in config_command:
-            output = conn.send_config_set(config)
-            print(output)
-
-        show_output = conn.send_command(cmd)
-        print(show_output)
-
-    else:
-        print('Failed to send config "{}"'.format(config_command))
+    device1.get_lldp_info(filename, name)
+    print()
+    device1.get_lldp_ip_address(filename, name)
 
 
 def get_username_password(name):
@@ -77,32 +46,11 @@ def get_filename_full_path(name):
     return filename
 
 
-def get_ap_port_info(fname, name, file):
-    filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
-    mac_address = connect.get_ap_mac_address(fname)
-    conn = connect.connect_to_device(name)
-    cmd = 'show mac-address-table address {}'.format(mac_address)
-
-    try:
-        if conn:
-            out = conn.send_command(cmd)
-            lines = out.split('\n')
-
-            line = lines[2].split('\t')
-            new_line = ''
-            for l in line:
-                if len(l) > 0:
-                    l = l.strip('\t')
-                    l = l.strip(' ')
-                    new_line = new_line + l + ' '
-
-        with open(filename, 'w') as fout:
-            csv_writer = csv.writer(fout)
-            new_line = new_line.split(' ')
-            csv_writer.writerow(new_line)
-
-    except ConnectionRefusedError:
-        print('Connection refused')
+def print_header():
+    print('--------------------------')
+    print('    NTP SERVER SCRIPT')
+    print('--------------------------')
+    print()
 
 
 if __name__ == '__main__':
