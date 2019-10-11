@@ -78,65 +78,67 @@ class CiscoDevice:
             print('Connection closed.')
 
     def get_lldp_ip_address(self, fname, name):
-        lines = list()
         con = self.connect_to_device(name)
+        lst = []
 
         filename = get_filename_full_path(fname)
 
         if os.path.exists(filename):
             with open(filename) as fin:
-                for line in fin:
-                    line = line.strip()
-                    lines.append(line.strip())
+                lst = fin.readlines()
 
-        ip = lines[14].split(':')
+        ln = lst[14].strip()
+        ip = ln.split(':')[1]
+        ip = ip.strip()
 
-        cmd = 'ping {}'.format(ip[1].strip())
+        cmd = f'ping {ip}'
         output = con.send_command(cmd)
         print(output)
 
-    def get_ap_mac_address(self, filename):
-        filename = get_filename_full_path(filename)
-        data = []
 
-        if os.path.exists(filename):
-            with open(filename) as fout:
-                data = fout.readlines()
+def get_ap_mac_address(self, filename):
+    filename = get_filename_full_path(filename)
+    data = []
 
-        chassis_id = data[2]
-        mac_address = chassis_id.split(':')[1].strip()
+    if os.path.exists(filename):
+        with open(filename) as fout:
+            data = fout.readlines()
 
-        return mac_address
+    chassis_id = data[2]
+    mac_address = chassis_id.split(':')[1].strip()
 
-    def get_ap_mac_address_info(self, fname, name, file):
-        filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
-        mac_address = self.get_ap_mac_address(fname)
-        conn = self.connect_to_device(name)
-        cmd = 'show mac-address-table address {}'.format(mac_address)
-        log = []
+    return mac_address
 
-        try:
-            if conn:
-                out = conn.send_command(cmd)
-                lines = out.split('\n')
-                line = lines[2].split('\t')
-                new_line = ''
-                for l in line:
-                    if len(l) > 0:
-                        l = l.strip('\t')
-                        l = l.strip(' ')
-                        new_line = new_line + l + ' '
 
-            with open(filename, 'w') as fout:
-                csv_writer = csv.writer(fout)
-                new_line = new_line.split(' ')
-                csv_writer.writerow(new_line)
+def get_ap_mac_address_info(self, fname, name, file):
+    filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
+    mac_address = self.get_ap_mac_address(fname)
+    conn = self.connect_to_device(name)
+    cmd = 'show mac-address-table address {}'.format(mac_address)
+    log = []
 
-        except ConnectionRefusedError:
-            print('Connection refused')
-        except:
-            log.append(sys.exc_info()[1])
-            with open('log.txt', 'w') as fout:
-                print(f'Will log error in {os.path.abspath(fname)}..')
-                for error in log:
-                    fout.write(str(error))
+    try:
+        if conn:
+            out = conn.send_command(cmd)
+            lines = out.split('\n')
+            line = lines[2].split('\t')
+            new_line = ''
+            for l in line:
+                if len(l) > 0:
+                    l = l.strip('\t')
+                    l = l.strip(' ')
+                    new_line = new_line + l + ' '
+
+        with open(filename, 'w') as fout:
+            csv_writer = csv.writer(fout)
+            new_line = new_line.split(' ')
+            csv_writer.writerow(new_line)
+
+    except ConnectionRefusedError:
+        print('Connection refused')
+    except:
+        log.append(sys.exc_info()[1])
+        with open('log.txt', 'w') as fout:
+            print(f'Will log error in {os.path.abspath(fname)}..')
+            for error in log:
+                fout.write(str(error))
