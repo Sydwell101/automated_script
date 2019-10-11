@@ -1,6 +1,6 @@
 import collections
 import os
-from Device import CiscoDevice
+import Device
 
 UserCredentials = collections.namedtuple('UserCredentials',
                                          'username, password')
@@ -9,7 +9,7 @@ UserCredentials = collections.namedtuple('UserCredentials',
 def main():
     print_header()
     name = 'credentials'
-    device1 = CiscoDevice('196.160.66.33')
+    device1 = Device.CiscoDevice('196.160.66.33')
     device1.connect_to_device(name)
     device1.config_device(name)
 

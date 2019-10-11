@@ -64,15 +64,15 @@ class CiscoDevice:
     def get_lldp_info(self, fname, name):
         connect = self.connect_to_device(name)
         cmd = 'show lldp neighbors detail'
-        # lines = list()
+
         filename = program.get_filename_full_path(fname)
 
         if connect:
             output = connect.send_command(cmd)
             output = output.strip()
             with open(filename, 'w') as fout:
-                print()
-                print(f'LLDP data will be saved to {filename}..')
+                print('show lldp neighbors detail:')
+                print(f'LLDP detail will be saved to {filename}..')
                 fout.write(output)
         else:
             print('Connection closed.')
@@ -86,6 +86,7 @@ class CiscoDevice:
         if os.path.exists(filename):
             with open(filename) as fin:
                 for line in fin:
+                    line = line.strip()
                     lines.append(line.strip())
 
         ip = lines[14].split(':')
@@ -95,9 +96,6 @@ class CiscoDevice:
         print(output)
 
     def get_ap_mac_address(self, filename):
-        # url = 'https://196.160.9.15:7443/api/public'
-        # send_request = requests.get(url)
-        # print(send_request.status_code)
         filename = program.get_filename_full_path(filename)
         data = []
 
@@ -110,7 +108,7 @@ class CiscoDevice:
 
         return mac_address
 
-    def get_ap_port_info(self, fname, name, file):
+    def get_ap_mac_address_info(self, fname, name, file):
         filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
         mac_address = self.get_ap_mac_address(fname)
         conn = self.connect_to_device(name)
