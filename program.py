@@ -2,7 +2,6 @@ from Device import *
 import collections
 import os
 
-
 UserCredentials = collections.namedtuple('UserCredentials',
                                          'username, password')
 
@@ -10,6 +9,7 @@ UserCredentials = collections.namedtuple('UserCredentials',
 def main():
     print_header()
     name = 'credentials'
+    csv_file = 'newfile'
     device1 = CiscoDevice('196.160.66.33')
     device1.connect_to_device(name)
     device1.config_device(name)
@@ -18,6 +18,8 @@ def main():
     device1.get_lldp_info(filename, name)
     print()
     device1.get_lldp_ip_address(filename, name)
+    device1.get_ap_mac_address(filename)
+    device1.get_ap_mac_address_info(filename, name, csv_file)
 
 
 def get_username_password(name):

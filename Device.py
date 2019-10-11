@@ -95,50 +95,48 @@ class CiscoDevice:
         output = con.send_command(cmd)
         print(output)
 
+    def get_ap_mac_address(self, filename):
+        filename = get_filename_full_path(filename)
+        data = []
 
-def get_ap_mac_address(self, filename):
-    filename = get_filename_full_path(filename)
-    data = []
+        if os.path.exists(filename):
+            with open(filename) as fout:
+                data = fout.readlines()
 
-    if os.path.exists(filename):
-        with open(filename) as fout:
-            data = fout.readlines()
+        chassis_id = data[2]
+        mac_address = chassis_id.split(':')[1].strip()
 
-    chassis_id = data[2]
-    mac_address = chassis_id.split(':')[1].strip()
+        return mac_address
 
-    return mac_address
+    def get_ap_mac_address_info(self, fname, name, file):
+        filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
+        mac_address = self.get_ap_mac_address(fname)
+        conn = self.connect_to_device(name)
+        cmd = 'show mac-address-table address {}'.format(mac_address)
+        log = []
 
+        try:
+            if conn:
+                out = conn.send_command(cmd)
+                lines = out.split('\n')
+                line = lines[2].split('\t')
+                new_line = ''
+                for l in line:
+                    if len(l) > 0:
+                        l = l.strip('\t')
+                        l = l.strip(' ')
+                        new_line = new_line + l + ' '
 
-def get_ap_mac_address_info(self, fname, name, file):
-    filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
-    mac_address = self.get_ap_mac_address(fname)
-    conn = self.connect_to_device(name)
-    cmd = 'show mac-address-table address {}'.format(mac_address)
-    log = []
+            with open(filename, 'w') as fout:
+                csv_writer = csv.writer(fout)
+                new_line = new_line.split(' ')
+                csv_writer.writerow(new_line)
 
-    try:
-        if conn:
-            out = conn.send_command(cmd)
-            lines = out.split('\n')
-            line = lines[2].split('\t')
-            new_line = ''
-            for l in line:
-                if len(l) > 0:
-                    l = l.strip('\t')
-                    l = l.strip(' ')
-                    new_line = new_line + l + ' '
-
-        with open(filename, 'w') as fout:
-            csv_writer = csv.writer(fout)
-            new_line = new_line.split(' ')
-            csv_writer.writerow(new_line)
-
-    except ConnectionRefusedError:
-        print('Connection refused')
-    except:
-        log.append(sys.exc_info()[1])
-        with open('log.txt', 'w') as fout:
-            print(f'Will log error in {os.path.abspath(fname)}..')
-            for error in log:
-                fout.write(str(error))
+        except ConnectionRefusedError:
+            print('Connection refused')
+        except:
+            log.append(sys.exc_info()[1])
+            with open('log.txt', 'w') as fout:
+                print(f'Will log error in {os.path.abspath(fname)}..')
+                for error in log:
+                    fout.write(str(error))
