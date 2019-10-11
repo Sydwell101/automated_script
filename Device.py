@@ -1,4 +1,4 @@
-import program
+from program import *
 import sys
 import os
 import csv
@@ -10,7 +10,7 @@ class CiscoDevice:
         self.host = host.strip()
 
     def connect_to_device(self, filename):
-        user = program.get_username_password(filename)
+        user = get_username_password(filename)
         log = []
         fname = 'log.txt'
 
@@ -65,7 +65,7 @@ class CiscoDevice:
         connect = self.connect_to_device(name)
         cmd = 'show lldp neighbors detail'
 
-        filename = program.get_filename_full_path(fname)
+        filename = get_filename_full_path(fname)
 
         if connect:
             output = connect.send_command(cmd)
@@ -81,7 +81,7 @@ class CiscoDevice:
         lines = list()
         con = self.connect_to_device(name)
 
-        filename = program.get_filename_full_path(fname)
+        filename = get_filename_full_path(fname)
 
         if os.path.exists(filename):
             with open(filename) as fin:
@@ -96,7 +96,7 @@ class CiscoDevice:
         print(output)
 
     def get_ap_mac_address(self, filename):
-        filename = program.get_filename_full_path(filename)
+        filename = get_filename_full_path(filename)
         data = []
 
         if os.path.exists(filename):
