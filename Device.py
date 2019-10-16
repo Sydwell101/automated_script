@@ -79,32 +79,36 @@ class CiscoDevice:
 
     def get_lldp_ip_address(self, fname, name):
         con = self.connect_to_device(name)
-        lst = []
-
+        search = None
         filename = get_filename_full_path(fname)
 
         if os.path.exists(filename):
             with open(filename) as fin:
-                lst = fin.readlines()
+                for l in fin:
+                    if l.find('IP') != -1:
+                        search = l.strip()
+                        break
 
-        ln = lst[14].strip()
-        ip = ln.split(':')[1]
-        ip = ip.strip()
+        ip = search.split(':')[1].strip()
 
         cmd = f'ping {ip}'
         output = con.send_command(cmd)
         print(output)
 
+        return ip
+
     def get_ap_mac_address(self, filename):
         filename = get_filename_full_path(filename)
-        data = []
+        search = None
 
         if os.path.exists(filename):
-            with open(filename) as fout:
-                data = fout.readlines()
+            with open(filename) as fin:
+                for entry in fin:
+                    if entry.find('Chassis id') != -1:
+                        search = entry.strip()
+                        break
 
-        chassis_id = data[2]
-        mac_address = chassis_id.split(':')[1].strip()
+        mac_address = search.split(':')[1].strip()
 
         return mac_address
 
@@ -139,4 +143,4 @@ class CiscoDevice:
             with open('log.txt', 'w') as fout:
                 print(f'Will log error in {os.path.abspath(fname)}..')
                 for error in log:
-                    fout.write(str(error))
+                    fout.write(error)
