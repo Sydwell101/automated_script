@@ -25,22 +25,26 @@ def main():
 def get_username_password(name):
     filename = get_filename_full_path(name)
     lines = list()
+    username = None
+    password = None
 
     if not os.path.exists(filename):
         print('File not found.')
     else:
         with open(filename) as fin:
-            for entry in fin.readlines():
-                entry = entry.strip()
-                lines.append(entry)
+            for entry in fin:
+                if entry.find('username') != -1:
+                    search_user = entry.strip()
+                    break
+            for l in fin:
+                if l.find('password') != -1:
+                    search_pass = l.strip()
+                    break
 
-    u_name = lines[0]
-    p_word = lines[1]
+    username = search_user.split(':')[1].strip()
+    password = search_pass.split(':')[1].strip()
 
-    usern = u_name[17:31].strip()
-    passw = p_word[10:-1].strip()
-
-    user = UserCredentials(username=usern, password=passw)
+    user = UserCredentials(username=username, password=password)
     return user
 
 
