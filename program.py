@@ -24,9 +24,6 @@ def main():
 
 def get_username_password(name):
     filename = get_filename_full_path(name)
-    lines = list()
-    username = None
-    password = None
 
     if not os.path.exists(filename):
         print('File not found.')
