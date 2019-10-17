@@ -11,7 +11,7 @@ def main():
     name = 'credentials'
     csv_file = 'newfile'
 
-    # Add devices on the devices-list you want to configure/monitor .
+    # Add devices you want to configure/monitor on the devices-list.
     devices = []
 
     filename = 'lldp-info'
