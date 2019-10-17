@@ -26,7 +26,7 @@ def get_username_password(name):
     filename = get_filename_full_path(name)
 
     if not os.path.exists(filename):
-        print('File not found.')
+        print(f'File "{filename}" not found.')
     else:
         with open(filename) as fin:
             for entry in fin:

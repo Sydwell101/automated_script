@@ -115,11 +115,12 @@ class CiscoDevice:
     def get_ap_mac_address_info(self, fname, name, file):
         filename = os.path.abspath(os.path.join('.', 'Files', file + '.csv'))
         mac_address = self.get_ap_mac_address(fname)
-        conn = self.connect_to_device(name)
-        cmd = 'show mac-address-table address {}'.format(mac_address)
+        cmd = f'show mac-address-table address {mac_address}'
         log = []
 
         try:
+            conn = self.connect_to_device(name)
+
             if conn:
                 out = conn.send_command(cmd)
                 lines = out.split('\n')
