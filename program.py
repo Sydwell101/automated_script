@@ -10,7 +10,9 @@ def main():
     print_header()
     name = 'credentials'
     csv_file = 'newfile'
-    devices = [CiscoDevice('196.160.66.33'), CiscoDevice('196.160.93.41')]
+
+    # Add devices on the devices-list you want to configure/monitor .
+    devices = []
 
     filename = 'lldp-info'
 
