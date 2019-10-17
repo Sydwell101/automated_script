@@ -1,1 +1,2 @@
-Connection to device timed-out: cisco_ios 196.160.66.33:22
+Authentication failure: unable to connect cisco_ios 196.160.93.41:22
+Authentication failed.

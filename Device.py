@@ -41,7 +41,7 @@ class CiscoDevice:
 
         config_command = ''
         cmd = 'show run | include ntp server'
-        ping = f'ping {conn.host}'
+        ping = f'ping vrf AP {conn.host}'
 
         ping_output = conn.send_command(ping)
         print(ping_output)
@@ -91,7 +91,7 @@ class CiscoDevice:
 
         ip = search.split(':')[1].strip()
 
-        cmd = f'ping {ip}'
+        cmd = f'ping vrf AP {ip}'
         output = con.send_command(cmd)
         print(output)
 

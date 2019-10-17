@@ -10,16 +10,18 @@ def main():
     print_header()
     name = 'credentials'
     csv_file = 'newfile'
-    device1 = CiscoDevice('196.160.66.33')
-    device1.connect_to_device(name)
-    device1.config_device(name)
+    devices = [CiscoDevice('196.160.66.33'), CiscoDevice('196.160.93.41')]
 
     filename = 'lldp-info'
-    device1.get_lldp_info(filename, name)
-    print()
-    device1.get_lldp_ip_address(filename, name)
-    device1.get_ap_mac_address(filename)
-    device1.get_ap_mac_address_info(filename, name, csv_file)
+
+    for device in devices:
+        device.connect_to_device(name)
+        device.config_device(name)
+        device.get_lldp_info(filename, name)
+        device.get_lldp_ip_address(filename, name)
+        device.get_ap_mac_address(filename)
+        device.get_ap_mac_address_info(filename, name, csv_file)
+        print('Done.' + '\n')
 
 
 def get_username_password(name):
